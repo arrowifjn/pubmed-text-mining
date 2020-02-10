@@ -1,0 +1,45 @@
+---
+title: "pubmed text mining"
+author: "arrowif"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## about pubmed.mineR
+65 functions including text mining and data mining
+```{r cars}
+# install.packages('pubmed.mineR')
+library(pubmed.mineR)
+#ls("package:pubmed.mineR")
+```
+
+## Text Mining
+
+from PubMed download the Abstrast(test) result，creat pubmed_result.txt file
+
+using readabs() read the result file
+
+generate the pubmed_abstracts data is a kind of S4 object, including: Journal,abstract, PMID
+
+```{r pressure, echo=FALSE}
+library(pubmed.mineR)
+pubmed_abstracts <- readabs("pubmed_result.txt")
+class(pubmed_abstracts)
+# [1] "Abstracts"
+printabs(pubmed_abstracts)  ## show the start and end part of the file
+```
+## extract pmid from abstracts data
+```{r}
+pmid <- pubmed_abstracts@PMID
+class(pmid)
+# [1] "numeric"
+```
+
+## get annotation info
+```{r}
+pubtator_output <- pubtator_function(pmid)
+```
+
