@@ -39,22 +39,59 @@ class(pmid)
 # [1] "numeric"
 ```
 
-## extract  from  abstracts data,  and get sentences
+## extract  from  abstracts data,  and get sentences token
 ```{r}
 abstractst <- pubmed_abstracts@Abstract
 
 #head(abstractst)
 
-#SentenceToken(abstractst[2])
+SentenceToken(abstractst[2])
 ```
 
 word frequence in the file
 
 ```{r}
-word_frequency <- word_atomizations(pubmed_abstracts)
+library(RISmed)
+library(dplyr)
+library(ggplot2)
+library(tidytext)
+library(wordcloud)
+
+result <- EUtilsSummary("Gallic acid AND hepg2 ", 
+                         type = "esearch", 
+                         db = "pubmed",
+                         #datetype = "pdat",
+                         retmax = 10000,
+                         mindate = 1970, 
+                         maxdate = 2020)
+fetch <- EUtilsGet(result, type = "efetch", db = "pubmed")
+abstracts <- data.frame(title = fetch@ArticleTitle,
+                        abstract = fetch@AbstractText,
+                        journal = fetch@Title,
+                        DOI = fetch@PMID,
+                        year = fetch@YearPubmed)
+abstracts <- abstracts %>% mutate(abstract = as.character(abstract))
+abstracts %>%
+  group_by(year) %>%
+  count() %>%
+  filter(year > 1969) %>%
+  ggplot(aes(year, n)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Pubmed articles with search terms Gallic acid hepg2 \n1970-2020", hjust = 0.5,
+       y = "Articles")
+
 ```
 
 
 
 
+```{r}
+cloud <- abstracts %>%
+  unnest_tokens(word, abstract) %>%
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+cloud %>%
+  with(wordcloud(word, n, min.freq = 15, max.words = 500, colors = brewer.pal(8, "Dark2")), scale = c(8,.3), per.rot = 0.4)
+```
 
