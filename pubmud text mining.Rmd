@@ -34,12 +34,27 @@ printabs(pubmed_abstracts)  ## show the start and end part of the file
 ## extract pmid from abstracts data
 ```{r}
 pmid <- pubmed_abstracts@PMID
+head(pmid)
 class(pmid)
 # [1] "numeric"
 ```
 
-## get annotation info
+## extract  from  abstracts data,  and get sentences
 ```{r}
-pubtator_output <- pubtator_function(pmid)
+abstractst <- pubmed_abstracts@Abstract
+
+#head(abstractst)
+
+#SentenceToken(abstractst[2])
 ```
+
+word frequence in the file
+
+```{r}
+word_frequency <- word_atomizations(pubmed_abstracts)
+```
+
+
+
+
 
